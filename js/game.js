@@ -1,46 +1,61 @@
-const playRound = function() {    
+const playRound = function(selection) {    
 
-    const getComputerChoice = function() {
+    const getComputerChoice = function() {                                                                                      //Función de elección de la compu.
         let randomNum = Math.floor(Math.random() * 3 + 1);
         return choice = (randomNum == 1) ? "Scissors" : (randomNum == 2) ? "Paper" : (randomNum == 3) ? "Rock" : "Error";
     }
 
-    let playerSelection = prompt('Scissors, paper or rock?', '').toUpperCase();
+    let playerSelection = selection.toUpperCase();                                                                              //Mayusculiza las elecciones para compararlas
     let computerSelection = getComputerChoice().toUpperCase();
 
-    if (playerSelection == computerSelection) {
-        console.log("It's a tie! You both chose " + playerSelection + "!");
+    if (playerSelection == computerSelection) {                                                                                 //Se fija quién gana
+        results("It's a tie! You both chose " + playerSelection + "!");
     } else {
         if (playerSelection == "SCISSORS" && computerSelection == "PAPER") {
             playerScore++;
-            console.log("Scissors beat Paper! You won!");
+            results("Scissors beat Paper! You won!");
         } else if (playerSelection == "SCISSORS" && computerSelection == "ROCK") {
             computerScore++;
-            console.log("Rock beats Scissors! You lost!");
+            results("Rock beats Scissors! You lost!");
         } else if (playerSelection == "PAPER" && computerSelection == "ROCK") {
             playerScore++;
-            console.log("Paper beats Rock! You won!");
+            results("Paper beats Rock! You won!");
         } else if (playerSelection == "PAPER" && computerSelection == "SCISSORS") {
             computerScore++;
-            console.log("Scissors beat Paper! You lost!");
+            results("Scissors beat Paper! You lost!");
         } else if (playerSelection == "ROCK" && computerSelection == "SCISSORS") {
             playerScore++;
-            console.log("Rock beats Scissors! You won!");
+            results("Rock beats Scissors! You won!");
         } else if (playerSelection == "ROCK" && computerSelection == "PAPER") {
             computerScore++;
-            console.log("Paper beats Rock! You lost!");
+            results("Paper beats Rock! You lost!");
         }
+        
+        if (computerScore >= 5) {                                                                          //Chequea si alguno de los dos jugadores llegó a 3 puntos
+            computerScore = 0;                                                                             //y, si ese es el caso, dice quién es el ganador.
+            playerScore = 0;
+            results('COMPUTER WINS!');                                                                     
+        }
+        if (playerScore >= 5) {
+            computerScore = 0;
+            playerScore = 0;
+            results('YOU WIN!');
+        }                                                                            
     }
 }
 
-function playGame(times) {
-    for (let i = 0; i < times; i++)
-        playRound();
+const results = function(msg) {
+    const div = document.querySelector('#results');
+    const message = document.getElementById('message');
+    const score = document.getElementById('score');
+    message.textContent = msg;
+    score.textContent = `YOU: ${playerScore} - COMPUTER: ${computerScore}`;
+    div.appendChild(message);
+    div.appendChild(score);
 }
+
 
 let playerScore = 0;
 let computerScore = 0;
-let victory = (playerScore > computerScore) ? "You beat the computer!" : (playerScore < computerScore) ? "The computer beat yo ass!" : "It's a tie! No one wins!";
-
-playGame(Number(prompt("How many times would you like to play?", "")));
-alert(victory)
+const buttons = document.querySelectorAll('button');
+buttons.forEach((button) => button.addEventListener('click', () => playRound(button.id)));
